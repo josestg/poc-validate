@@ -5,16 +5,14 @@ type Integers interface {
 		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64
 }
 
-type IntComposer[T Integers] func(f Validator[T]) Validator[T]
+type IntComposer[T Integers] Composer[T]
 
 func Int[T Integers]() IntComposer[T] {
 	return Identity[Validator[T]]
 }
 
-func (f IntComposer[T]) and(second Validator[T]) IntComposer[T] {
-	return func(first Validator[T]) Validator[T] {
-		return mergeValidator(f(first), second)
-	}
+func (f IntComposer[T]) and(next Validator[T]) IntComposer[T] {
+	return IntComposer[T](compose(Composer[T](f), next))
 }
 
 func (f IntComposer[T]) Compose() Validator[T]    { return f(nop[T]()) }

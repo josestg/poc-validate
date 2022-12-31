@@ -6,14 +6,12 @@ import (
 	"strings"
 )
 
-type StringComposer func(f Validator[string]) Validator[string]
+type StringComposer Composer[string]
 
 func String() StringComposer { return Identity[Validator[string]] }
 
-func (f StringComposer) and(second Validator[string]) StringComposer {
-	return func(first Validator[string]) Validator[string] {
-		return mergeValidator(f(first), second)
-	}
+func (f StringComposer) and(next Validator[string]) StringComposer {
+	return StringComposer(compose(Composer[string](f), next))
 }
 
 func (f StringComposer) Compose() Validator[string]          { return f(nop[string]()) }

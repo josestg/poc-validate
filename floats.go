@@ -4,14 +4,12 @@ type Floats interface {
 	~float32 | ~float64
 }
 
-type FloatComposer[T Floats] func(f Validator[T]) Validator[T]
+type FloatComposer[T Floats] Composer[T]
 
 func Float[T Floats]() FloatComposer[T] { return Identity[Validator[T]] }
 
-func (f FloatComposer[T]) and(second Validator[T]) FloatComposer[T] {
-	return func(first Validator[T]) Validator[T] {
-		return mergeValidator(f(first), second)
-	}
+func (f FloatComposer[T]) and(next Validator[T]) FloatComposer[T] {
+	return FloatComposer[T](compose(Composer[T](f), next))
 }
 
 func (f FloatComposer[T]) Compose() Validator[T]      { return f(nop[T]()) }

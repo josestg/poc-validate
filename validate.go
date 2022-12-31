@@ -17,6 +17,14 @@ func mergeValidator[T any](validators ...Validator[T]) Validator[T] {
 	}
 }
 
+type Composer[T any] func(f Validator[T]) Validator[T]
+
+func compose[T any](composer Composer[T], next Validator[T]) Composer[T] {
+	return func(validator Validator[T]) Validator[T] {
+		return mergeValidator(composer(validator), next)
+	}
+}
+
 type Error struct {
 	Constraint string
 	Message    string
@@ -44,4 +52,4 @@ func stringify(v any) string {
 
 func Identity[F any](f F) F { return f }
 
-func nop[T any]() func(T) error { return func(_ T) error { return nil } }
+func nop[T any]() Validator[T] { return func(_ T) error { return nil } }
