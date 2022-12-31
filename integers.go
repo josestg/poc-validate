@@ -5,18 +5,14 @@ type Integers interface {
 		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64
 }
 
-type IntValidator[T Integers] func(v T) error
-
-func (f IntValidator[T]) Evaluate(n T) error { return f(n) }
-
-type IntComposer[T Integers] func(f IntValidator[T]) IntValidator[T]
+type IntComposer[T Integers] func(f Validator[T]) Validator[T]
 
 func Int[T Integers]() IntComposer[T] {
-	return Identity[IntValidator[T]]
+	return Identity[Validator[T]]
 }
 
-func (f IntComposer[T]) and(second IntValidator[T]) IntComposer[T] {
-	return func(first IntValidator[T]) IntValidator[T] {
+func (f IntComposer[T]) and(second Validator[T]) IntComposer[T] {
+	return func(first Validator[T]) Validator[T] {
 		return func(n T) error {
 			if err := f(first).Evaluate(n); nil != err {
 				return err
@@ -27,7 +23,7 @@ func (f IntComposer[T]) and(second IntValidator[T]) IntComposer[T] {
 	}
 }
 
-func (f IntComposer[T]) Compose() IntValidator[T] { return f(nop[T]()) }
+func (f IntComposer[T]) Compose() Validator[T]    { return f(nop[T]()) }
 func (f IntComposer[T]) Min(min T) IntComposer[T] { return f.and(minimum("integer_min", min)) }
 func (f IntComposer[T]) Max(max T) IntComposer[T] { return f.and(maximum("integer_max", max)) }
 func (f IntComposer[T]) Choose(choices ...T) IntComposer[T] {

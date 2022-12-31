@@ -2,6 +2,10 @@ package validate
 
 import "encoding/json"
 
+type Validator[T any] func(T) error
+
+func (f Validator[T]) Evaluate(n T) error { return f(n) }
+
 type Error struct {
 	Constraint string
 	Message    string

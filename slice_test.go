@@ -12,7 +12,7 @@ func TestSliceOf(t *testing.T) {
 		value          []string
 		wantError      bool
 		wantConstraint map[string]string
-		validator      validate.StringValidator
+		validator      validate.Validator[string]
 	}{
 		{
 			name:      "it should fail when any string is blank",

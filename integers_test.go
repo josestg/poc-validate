@@ -26,7 +26,7 @@ func testIntVariant[V validate.Integers]() func(t *testing.T) {
 			value          V
 			wantError      bool
 			wantConstraint string
-			validator      validate.IntValidator[V]
+			validator      validate.Validator[V]
 		}{
 			{
 				name:           "it should fail when the int is less than the min",

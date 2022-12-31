@@ -12,7 +12,7 @@ func TestString(t *testing.T) {
 		value          string
 		wantError      bool
 		wantConstraint string
-		validator      validate.StringValidator
+		validator      validate.Validator[string]
 	}{
 		{
 			name:           "it should fail when the string is blank",

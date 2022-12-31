@@ -17,7 +17,7 @@ func testFloatVariant[V validate.Floats]() func(t *testing.T) {
 			value          V
 			wantError      bool
 			wantConstraint string
-			validator      validate.FloatValidator[V]
+			validator      validate.Validator[V]
 		}{
 			{
 				name:           "it should fail when the value is less than the min",

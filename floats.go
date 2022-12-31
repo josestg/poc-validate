@@ -4,16 +4,12 @@ type Floats interface {
 	~float32 | ~float64
 }
 
-type FloatValidator[T Floats] func(n T) error
+type FloatComposer[T Floats] func(f Validator[T]) Validator[T]
 
-func (f FloatValidator[T]) Evaluate(n T) error { return f(n) }
+func Float[T Floats]() FloatComposer[T] { return Identity[Validator[T]] }
 
-type FloatComposer[T Floats] func(f FloatValidator[T]) FloatValidator[T]
-
-func Float[T Floats]() FloatComposer[T] { return Identity[FloatValidator[T]] }
-
-func (f FloatComposer[T]) and(second FloatValidator[T]) FloatComposer[T] {
-	return func(first FloatValidator[T]) FloatValidator[T] {
+func (f FloatComposer[T]) and(second Validator[T]) FloatComposer[T] {
+	return func(first Validator[T]) Validator[T] {
 		return func(n T) error {
 			if err := f(first).Evaluate(n); nil != err {
 				return err
@@ -24,7 +20,7 @@ func (f FloatComposer[T]) and(second FloatValidator[T]) FloatComposer[T] {
 	}
 }
 
-func (f FloatComposer[T]) Compose() FloatValidator[T] { return f(nop[T]()) }
+func (f FloatComposer[T]) Compose() Validator[T]      { return f(nop[T]()) }
 func (f FloatComposer[T]) Min(min T) FloatComposer[T] { return f.and(minimum("float_min", min)) }
 func (f FloatComposer[T]) Max(max T) FloatComposer[T] { return f.and(maximum("float_max", max)) }
 func (f FloatComposer[T]) Choose(choices ...T) FloatComposer[T] {
