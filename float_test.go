@@ -1,8 +1,8 @@
 package validate_test
 
 import (
+	"poc-validate"
 	"testing"
-	"validate"
 )
 
 func TestFloat(t *testing.T) {

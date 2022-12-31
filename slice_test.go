@@ -1,9 +1,9 @@
 package validate_test
 
 import (
+	validate "poc-validate"
 	"strings"
 	"testing"
-	"validate"
 )
 
 func TestSliceOf(t *testing.T) {

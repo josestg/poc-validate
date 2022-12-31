@@ -1,8 +1,8 @@
 package validate_test
 
 import (
+	validate "poc-validate"
 	"testing"
-	"validate"
 )
 
 func TestInt(t *testing.T) {
