@@ -6,6 +6,17 @@ type Validator[T any] func(T) error
 
 func (f Validator[T]) Evaluate(n T) error { return f(n) }
 
+func mergeValidator[T any](validators ...Validator[T]) Validator[T] {
+	return func(v T) error {
+		for _, validator := range validators {
+			if err := validator(v); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+}
+
 type Error struct {
 	Constraint string
 	Message    string

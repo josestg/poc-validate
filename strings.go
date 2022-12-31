@@ -12,13 +12,7 @@ func String() StringComposer { return Identity[Validator[string]] }
 
 func (f StringComposer) and(second Validator[string]) StringComposer {
 	return func(first Validator[string]) Validator[string] {
-		return func(s string) error {
-			if err := f(first).Evaluate(s); nil != err {
-				return err
-			}
-
-			return second.Evaluate(s)
-		}
+		return mergeValidator(f(first), second)
 	}
 }
 

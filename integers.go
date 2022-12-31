@@ -13,13 +13,7 @@ func Int[T Integers]() IntComposer[T] {
 
 func (f IntComposer[T]) and(second Validator[T]) IntComposer[T] {
 	return func(first Validator[T]) Validator[T] {
-		return func(n T) error {
-			if err := f(first).Evaluate(n); nil != err {
-				return err
-			}
-
-			return second.Evaluate(n)
-		}
+		return mergeValidator(f(first), second)
 	}
 }
 
